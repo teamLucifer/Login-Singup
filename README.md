@@ -1,6 +1,6 @@
 # Login-Singup
 
-### Add this depedency in your pubspec.yaml (package forloader)
+### Add this depedency in your pubspec.yaml (package for loader)
 
 modal_progress_hud: ^0.1.3
 
