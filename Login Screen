@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 if (newUser != null) {
                                   Navigator.push(context,
                                       MaterialPageRoute(builder: (context) {
-                                    return MainMovieScreen();
+                                    return null;
                                   }));
                                 }
                                 setState(() {
