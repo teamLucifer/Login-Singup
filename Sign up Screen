@@ -1,0 +1,275 @@
+import 'package:flutter/material.dart';
+import 'login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+
+
+import 'main_movie_screen.dart';
+
+class SignUpScreen extends StatefulWidget {
+  @override
+  _SignUpScreenState createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  final _auth = FirebaseAuth.instance;
+  String email;
+  String password;
+  String confirmPassword;
+  bool showSpinner = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return ModalProgressHUD(
+      inAsyncCall: showSpinner,
+      child: Scaffold(
+          backgroundColor: Colors.white,
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.all(14.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Container(
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: EdgeInsets.fromLTRB(15.0, 50.0, 0.0, 0.0),
+                          child: Text(
+                            'Sign',
+                            style: TextStyle(
+                              fontSize: 80.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Monst',
+                            ),
+                          ),
+                        ),
+                        Container(
+                          padding: EdgeInsets.fromLTRB(15.0, 120.0, 0.0, 0.0),
+                          child: Text(
+                            'Up',
+                            style: TextStyle(
+                              fontSize: 80.0,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Monst',
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding:
+                        EdgeInsets.only(top: 15.0, left: 20.0, right: 20.0),
+                    child: Column(
+                      children: <Widget>[
+                        TextField(
+                          onChanged: (value) {
+                            email = value.trim();
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'EMAIL',
+                            labelStyle: TextStyle(
+                              fontFamily: 'Monst',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                            hintText: 'Email ID',
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xff003CAA),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        TextField(
+                          onChanged: (value) {
+                            password = value.trim();
+                          },
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'PASSWORD',
+                            labelStyle: TextStyle(
+                              fontFamily: 'Monst',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                            hintText: 'Password',
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xff003CAA),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.0,
+                        ),
+                        TextField(
+                          onChanged: (value) {
+                            confirmPassword = value.trim();
+                          },
+                          obscureText: true,
+                          decoration: InputDecoration(
+                            labelText: 'CONFIRM PASSWORD',
+                            labelStyle: TextStyle(
+                              fontFamily: 'Monst',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey,
+                            ),
+                            hintText: 'Confirm Password',
+                            focusedBorder: UnderlineInputBorder(
+                              borderSide: BorderSide(
+                                color: Color(0xff003CAA),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 50.0,
+                        ),
+                        Container(
+                          height: 50.0,
+                          width: 350.0,
+                          child: Material(
+                            borderRadius: BorderRadius.circular(20.0),
+                            shadowColor: Color(0xff005AFE),
+                            color: Color(0xff003CAA),
+                            elevation: 5.0,
+                            child: InkWell(
+                              onTap: () async {
+                                try {
+                                  setState(() {
+                                    showSpinner = true;
+                                  });
+                                  if (password == confirmPassword) {
+                                    final newUser = await _auth
+                                        .createUserWithEmailAndPassword(
+                                            email: email, password: password);
+                                    if (newUser != null) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) {
+                                          return MainMovieScreen();
+                                        }),
+                                      );
+                                    }
+                                    setState(() {
+                                      showSpinner = false;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      showSpinner = true;
+                                    });
+                                    Fluttertoast.showToast(
+                                        msg: "Passwords do not match",
+                                        toastLength: Toast.LENGTH_SHORT,
+                                        gravity: ToastGravity.CENTER,
+                                        timeInSecForIos: 1,
+                                        backgroundColor: Colors.red,
+                                        textColor: Colors.white,
+                                        fontSize: 16.0);
+                                  }
+                                } catch (e) {
+                                  print(e);
+                                  setState(() {
+                                    showSpinner = true;
+                                  });
+                                }
+                              },
+                              child: Center(
+                                child: Text(
+                                  'SIGN UP',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontFamily: 'Monst',
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 15.0,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: 50.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                'Already Registered?',
+                                style: TextStyle(
+                                  fontFamily: 'Monst',
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              SizedBox(
+                                width: 5.0,
+                              ),
+                              InkWell(
+                                onTap: () {},
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) {
+                                        return LoginScreen();
+                                      }),
+                                    );
+                                  },
+                                  child: Text(
+                                    'Log in',
+                                    style: TextStyle(
+                                      color: Color(0xff003CAA),
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w600,
+                                      decoration: TextDecoration.underline,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {},
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) {
+                                  return null;
+                                }),
+                              );
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.only(top: 5.0),
+                              child: Text(
+                                'Skip',
+                                style: TextStyle(
+                                  color: Color(0xff003CAA),
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.w600,
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )),
+    );
+  }
+}
